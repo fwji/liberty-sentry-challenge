@@ -1,0 +1,19 @@
+ docker run --network=demo_net --ip=172.25.3.3 -itd --name mongo -p 27017:27017
+ docker build --tag=liberty-demo-leaderboard .
+ docker run --network=demo_net --ip=172.25.3.4 -itd --name leaderboard -p 9082:9082 -p 9447:9447  liberty-demo-leaderboard
+
+ docker build --tag=liberty-demo-webapp .
+ docker run --network=demo_net --ip=172.25.3.5 -itd --name webapp -p 9080:9080 -p 9443:9443  liberty-demo-webapp
+
+ docker build --tag=liberty-demo-game .
+ docker run --network=demo_net --ip=172.25.3.6 -itd --name game -p 9081:9081 -p 9445:9445  liberty-demo-game
+
+ docker build --tag=liberty-demo-admin .
+ docker run --network=demo_net --ip=172.25.3.7 -itd --name admin -p 9083:9083 -p 9449:9449  liberty-demo-admin
+
+ docker build --tag=liberty-demo-nginx .
+ docker run --network=demo_net --ip=172.25.3.8 -itd --name webapp-nginx -p 9084:80 liberty-demo-nginx
+
+
+ docker images -q --filter "dangling=true" | xargs docker rmi  
+ docker rm `docker ps --no-trunc -aq`  

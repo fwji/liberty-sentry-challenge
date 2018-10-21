@@ -1,0 +1,11 @@
+liberty-demo-admin/target/
+liberty-demo-webapp/target/
+liberty-demo-leaderboard/target/
+liberty-demo-game/target/
+*/.settings/
+*/.project
+*/.classpath
+*/.factorypath
+*/MANIFEST.MF
+README.html
+.DS_Store
