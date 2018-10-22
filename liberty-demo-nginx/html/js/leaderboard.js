@@ -72,7 +72,7 @@ $("#startOverBtn").click(function() {
 
 function pageRedirect(isRankedGame) {
   if (isRankedGame)
-    window.location.replace("index.html");
+    window.location.replace("newgame.html");
   else 
-    window.location.replace("index_practice.html");
+    window.location.replace("newpractice.html");
 }

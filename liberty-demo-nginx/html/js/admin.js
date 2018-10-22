@@ -182,11 +182,17 @@ function sendSocket(payload) {
 
 $("#menuButton").click(function() {
   //cleanupSocket();
-  pageRedirect();
+  $.ajax({
+    type: "POST",
+    url: "http://localhost:9083/liberty-demo-admin/adminapp/admin/disconnect",
+    success: pageRedirect,
+    error: fail,
+    dataType: "json"
+  });
 });
 
 function pageRedirect() {
-  window.location.replace("menu.html");
+  window.location.replace("index.html");
 }
 
 function cleanupSocket(){

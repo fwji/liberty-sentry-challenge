@@ -3,7 +3,10 @@ package openliberty.sentry.demo.models;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -23,6 +26,7 @@ public class Game {
 
 	GameSession session;
 	boolean isRanked;
+	LinkedList<GameStat> leaderBoardCache;
 	
 	private final String DEFAULT_PORT = "9082";
 	
@@ -41,9 +45,7 @@ public class Game {
 	public void stopCurrentSession() throws Exception {
 		session.deactivateTarets();
 		if (session.isRankedGame) {
-			GameStat stat = new GameStat();
-			stat.setPid(session.getPID());
-			stat.setScore(session.getSessionScore());
+			GameStat stat = new GameStat(session.getPID(), session.getSessionScore());
 			writeStatWithGivenHostName(DEFAULT_HOST, stat);
 		}
 	}
@@ -60,7 +62,7 @@ public class Game {
 		return isRanked;
 	}
 	
-	public List<HashMap> getTopScores(){
+	public List<GameStat> getTopScores(){
 		return getTopScoreWithGivenHostName(DEFAULT_HOST);
 	}
 
@@ -80,6 +82,27 @@ public class Game {
 					.register(UnknownUrlExceptionMapper.class).build(LeaderboardClient.class);
 			String jsonStat = jsonb.toJson(gamestat);
 			customRestClient.writeStat(jsonStat);
+			if (leaderBoardCache == null)
+				leaderBoardCache = new LinkedList<GameStat>();
+			if (leaderBoardCache.size() < 5) {
+				leaderBoardCache.add(gamestat);
+			} else {
+				if (gamestat.getScore() > leaderBoardCache.getLast().getScore()) {
+					leaderBoardCache.removeLast();
+					leaderBoardCache.addLast(gamestat);
+				}
+			}
+			Collections.sort(leaderBoardCache, new Comparator<GameStat>() {
+			    @Override
+			    public int compare(GameStat g1, GameStat g2) {
+			        if (g2.getScore() < g1.getScore())
+			        	return -1;
+			        else if (g2.getScore() > g1.getScore())
+			        	return 1;
+			        else
+			        	return g2.getPid().compareTo(g1.getPid());
+			    }
+			});
 		} catch (ProcessingException ex) {
 			handleProcessingException(ex);
 		} catch (UnknownUrlException e) {
@@ -89,15 +112,36 @@ public class Game {
 		}
 	}
 	
-	private List<HashMap> getTopScoreWithGivenHostName(String hostname){
+	private List<GameStat> getTopScoreWithGivenHostName(String hostname){
 		String customURLString = "http://" + hostname + ":" + DEFAULT_PORT + "/liberty-demo-leaderboard/app/leaderboard";
 		URL customURL = null;
 		System.out.println("customURLString is: " + customURLString);
 		try {
-			customURL = new URL(customURLString);
-			LeaderboardClient customRestClient = RestClientBuilder.newBuilder().baseUrl(customURL)
-					.register(UnknownUrlExceptionMapper.class).build(LeaderboardClient.class);
-			return customRestClient.listLeaderBoard();
+			if (leaderBoardCache == null) {
+				leaderBoardCache = new LinkedList<GameStat>();
+				customURL = new URL(customURLString);
+				LeaderboardClient customRestClient = RestClientBuilder.newBuilder().baseUrl(customURL)
+						.register(UnknownUrlExceptionMapper.class).build(LeaderboardClient.class);
+				List<HashMap> resultMap = customRestClient.listLeaderBoard();	
+				for (HashMap h: resultMap) {
+					String pid = String.valueOf(h.get("pid"));
+					int score = Integer.valueOf(String.valueOf(h.get("score")));
+					GameStat stat = new GameStat(pid, score);
+					leaderBoardCache.add(stat);
+				}
+			} 
+			Collections.sort(leaderBoardCache, new Comparator<GameStat>() {
+			    @Override
+			    public int compare(GameStat g1, GameStat g2) {
+			        if (g2.getScore() < g1.getScore())
+			        	return -1;
+			        else if (g2.getScore() > g1.getScore())
+			        	return 1;
+			        else
+			        	return g2.getPid().compareTo(g1.getPid());
+			    }
+			});
+			return leaderBoardCache;
 			
 		} catch (ProcessingException ex) {
 			handleProcessingException(ex);

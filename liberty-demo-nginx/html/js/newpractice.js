@@ -2,6 +2,10 @@ $("#startBtn").click(function() {
   initializeGame();
 });
 
+$("#menuBtn").click(function() {
+  pageRedirect();
+});
+
 function initializeGame() {
   // To Do
   var user = $("#userName").val();
@@ -18,6 +22,10 @@ function initializeGame() {
       dataType: "json"
     });
   }
+}
+
+function pageRedirect() {
+  window.location.replace("index.html");
 }
 
 function fail() {

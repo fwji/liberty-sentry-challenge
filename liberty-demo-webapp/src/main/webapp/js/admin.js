@@ -185,15 +185,14 @@ $("#menuButton").click(function() {
   $.ajax({
     type: "POST",
     url: "http://localhost:9083/liberty-demo-admin/adminapp/admin/disconnect",
-    success: success,
+    success: pageRedirect,
     error: fail,
     dataType: "json"
   });
-  //pageRedirect();
 });
 
 function pageRedirect() {
-  window.location.replace("menu.html");
+  window.location.replace("index.html");
 }
 
 function cleanupSocket(){

@@ -4,6 +4,10 @@ public class GameStat {
 	String pid;
 	int score;
 	
+	public GameStat(String p, int s) {
+		pid = p;
+		score = s;
+	}
 	public String getPid() {
 		return pid;
 	}

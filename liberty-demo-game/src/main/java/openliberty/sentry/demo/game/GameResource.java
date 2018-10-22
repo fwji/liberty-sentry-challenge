@@ -108,10 +108,10 @@ public class GameResource {
     	JsonObjectBuilder builder = Json.createObjectBuilder();
     	builder.add("score", String.valueOf(game.getScore()));
     	if (game.isRanked()) {
-        	List<HashMap> topScores = game.getTopScores();
+        	List<GameStat> topScores = game.getTopScores();
         	JsonArrayBuilder jsonStatsArray = Json.createArrayBuilder();
-        	for (HashMap stat: topScores) {
-        		JsonObjectBuilder job = Json.createObjectBuilder().add("pid", String.valueOf(stat.get("pid"))).add("score", String.valueOf(stat.get("score")));
+        	for (GameStat stat: topScores) {
+        		JsonObjectBuilder job = Json.createObjectBuilder().add("pid", stat.getPid()).add("score", String.valueOf(stat.getScore()));
         		jsonStatsArray.add(job);
         	}
         	builder.add("leaderboard", jsonStatsArray);    		
