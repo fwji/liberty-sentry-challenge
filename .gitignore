@@ -9,3 +9,8 @@ liberty-demo-game/target/
 */MANIFEST.MF
 README.html
 .DS_Store
+
+!liberty-demo-admin/target/*.war
+!liberty-demo-webapp/target/*.war
+!liberty-demo-leaderboard/target/*.war
+!liberty-demo-game/target/*.war
