@@ -1,4 +1,6 @@
- docker run --network=demo_net --ip=172.25.3.3 -itd --name mongo -p 27017:27017
+ docker network create -d bridge --subnet 172.25.0.0/16 demo_net --attachable
+
+ docker run --network=demo_net --ip=172.25.3.3 -itd --name mongo -p 27017:27017 mongo
  docker build --tag=liberty-demo-leaderboard .
  docker run --network=demo_net --ip=172.25.3.4 -itd --name leaderboard -p 9082:9082 -p 9447:9447  liberty-demo-leaderboard
 
@@ -17,3 +19,4 @@
 
  docker images -q --filter "dangling=true" | xargs docker rmi  
  docker rm `docker ps --no-trunc -aq`  
+
