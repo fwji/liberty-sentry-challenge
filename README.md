@@ -23,13 +23,10 @@ docker network create -d bridge --subnet 172.25.0.0/16 demo_net --attachable
 
 2. run the following command
 ```
-./deploy_admin.sh
-./deploy_nginx.sh
-./deploy_leaderboard.sh
-./deploy_game.sh
+./install.sh
 ```
 
-## Uninstall
+## Uninstallation
 ```
 ./nuke_all.sh
 ```
