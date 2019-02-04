@@ -1,4 +1,4 @@
-# liberty-sentry-challenge
+# Liberty Space Sentry Challenge
 
 ## Introduction
 Liberty Sentry Challenge is a fun and competitive laser tagging game build using Open Liberty, Arduinos and other IoT devices and circuitries.
